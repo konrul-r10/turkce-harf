@@ -13,7 +13,7 @@ pip install turkce-harf
 ## Kullanım
 
 ```python
-from turkce_harf import tr_lower, tr_upper, tr_title, tr_sort_key, tr_fold
+from turkce_harf import tr_lower, tr_upper, tr_title, tr_sort_key, tr_fold, tr_slug
 
 tr_upper("istanbul")        # 'İSTANBUL'
 tr_lower("ISPARTA")         # 'ısparta'
@@ -23,6 +23,8 @@ sorted(["şapka", "sabun", "ırmak"], key=tr_sort_key)
 # ['ırmak', 'sabun', 'şapka']
 
 tr_fold("Kılıç")            # 'kilic'  (yalnızca arama için)
+
+tr_slug("Çok güzel başlık! İstanbul'da")  # 'cok-guzel-baslik-istanbulda'
 
 # İngilizce metin için lang="en" kullan
 tr_lower("IBM", lang="en")       # 'ibm'
@@ -40,6 +42,7 @@ Tüm fonksiyonlar `lang="tr"` (varsayılan) ya da `lang="en"` alır.
 - `tr_title(text)`: Her kelimenin ilk harfini büyütür, geri kalanı küçültür.
 - `tr_sort_key(text)`: Türkçe alfabe sırasına göre sıralama anahtarı. Alfabe dışı karakterler sona gider.
 - `tr_fold(text)`: Kayıplı arama anahtarı (`ı`→`i`, `ş`→`s`, `ç`→`c`, `ğ`→`g`, `ö`→`o`, `ü`→`u`). Saklanan veri için değil, yalnızca karşılaştırma için kullanın.
+- `tr_slug(text, separator="-")`: URL slug'ı üretir. Kesme işareti kelimeyi bölmez (`İstanbul'da` → `istanbulda`), Türkçe harfler aksansız karşılığına çevrilir.
 - `tr_nfc(text)`: Metni NFC biçimine getirir.
 
 ## Geliştirme

@@ -10,9 +10,12 @@ Her fonksiyon ``lang`` parametresi alır:
 - ``lang="en"``: Standart İngilizce kuralları uygulanır (``I`` → ``i``).
 """
 
+import re
 import unicodedata
 
-__all__ = ["tr_lower", "tr_upper", "tr_title", "tr_sort_key", "tr_fold", "tr_nfc"]
+__all__ = [
+    "tr_lower", "tr_upper", "tr_title", "tr_sort_key", "tr_fold", "tr_nfc", "tr_slug",
+]
 
 _LANGS = ("tr", "en")
 
@@ -22,6 +25,10 @@ _ORDER_INDEX = {c: i for i, c in enumerate(_ORDER)}
 
 # Arama anahtarı için Türkçe harfleri ASCII karşılıklarına çevirir (kayıplı)
 _FOLD_TABLE = str.maketrans("ıçğöşü", "icgosu")
+
+# Slug için: kesme işaretleri kelimeyi bölmez, silinir
+_APOSTROPHES = re.compile("['’ʼ`´]")
+_NON_ALNUM = re.compile(r"[^a-z0-9]+")
 
 
 def _check_lang(lang):
@@ -103,3 +110,24 @@ def tr_fold(text, lang="tr"):
     if lang == "en":
         return tr_lower(text, "en")
     return tr_lower(text, "tr").translate(_FOLD_TABLE)
+
+
+def tr_slug(text, lang="tr", separator="-"):
+    """URL için slug üretir.
+
+    - Kesme işaretleri silinir, kelimeyi bölmez: ``"İstanbul'da"`` → ``"istanbulda"``.
+    - ``lang="tr"``: Türkçe harfler aksansız karşılığına çevrilir (``ç``→``c``, ``ı``→``i``).
+    - ``lang="en"``: aksanlar kaldırılır (``é``→``e``).
+    - Harf ve rakam dışındaki her karakter dizisi ``separator`` ile değiştirilir.
+
+    ``tr_slug("Çok güzel başlık! İstanbul'da") == "cok-guzel-baslik-istanbulda"``
+    """
+    _check_lang(lang)
+    text = _APOSTROPHES.sub("", tr_nfc(text))
+    if lang == "tr":
+        base = tr_fold(text, "tr")
+    else:
+        base = tr_lower(text, "en")
+    base = unicodedata.normalize("NFKD", base).encode("ascii", "ignore").decode("ascii")
+    slug = _NON_ALNUM.sub(lambda _m: separator, base)
+    return slug.strip(separator)
