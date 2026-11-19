@@ -112,3 +112,39 @@ def test_tr_fold_matches_ascii_and_turkish_forms():
 def test_tr_nfc_composes_sequences():
     decomposed = unicodedata.normalize("NFD", "ş")
     assert tr_nfc(decomposed) == "ş"
+
+
+# --- lang="en" ---
+
+def test_en_lower_maps_i_to_i():
+    assert tr_lower("IBM", lang="en") == "ibm"
+    assert tr_lower("ISTANBUL", lang="en") == "istanbul"
+
+
+def test_en_upper_maps_i_to_i():
+    assert tr_upper("istanbul", lang="en") == "ISTANBUL"
+
+
+def test_en_title():
+    assert tr_title("hello world", lang="en") == "Hello World"
+
+
+def test_en_sort_is_plain_codepoint_order():
+    assert sorted(["c", "a", "b"], key=lambda s: tr_sort_key(s, "en")) == ["a", "b", "c"]
+    # İngilizce'de ı diye bir harf yok, sıralama standart
+    assert tr_sort_key("i", "en") < tr_sort_key("j", "en")
+
+
+def test_en_fold_only_lowercases():
+    assert tr_fold("IBM", lang="en") == "ibm"
+    assert tr_fold("Kılıç", lang="en") == "kılıç"
+
+
+def test_default_lang_is_turkish():
+    assert tr_lower("I") == tr_lower("I", lang="tr") == "ı"
+
+
+@pytest.mark.parametrize("func", [tr_lower, tr_upper, tr_title, tr_sort_key, tr_fold])
+def test_invalid_lang_raises(func):
+    with pytest.raises(ValueError):
+        func("abc", lang="de")

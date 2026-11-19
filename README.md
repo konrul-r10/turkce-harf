@@ -23,9 +23,17 @@ sorted(["şapka", "sabun", "ırmak"], key=tr_sort_key)
 # ['ırmak', 'sabun', 'şapka']
 
 tr_fold("Kılıç")            # 'kilic'  (yalnızca arama için)
+
+# İngilizce metin için lang="en" kullan
+tr_lower("IBM", lang="en")       # 'ibm'
+tr_upper("istanbul", lang="en")  # 'ISTANBUL'
 ```
 
+Her fonksiyon `lang` parametresi alır: `"tr"` (varsayılan) Türkçe kurallarını, `"en"` standart İngilizce kurallarını uygular. Karışık ya da İngilizce metinde `lang="en"` kullanmak `I` harfinin `ı`'ya dönüşmesini önler.
+
 ## Fonksiyonlar
+
+Tüm fonksiyonlar `lang="tr"` (varsayılan) ya da `lang="en"` alır.
 
 - `tr_lower(text)`: Türkçe kurallarıyla küçük harf (`I` → `ı`, `İ` → `i`).
 - `tr_upper(text)`: Türkçe kurallarıyla büyük harf (`i` → `İ`, `ı` → `I`).
