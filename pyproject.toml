@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "turkce-harf"
+version = "0.1.0"
+description = "Türkçe harfler için büyük/küçük harf dönüşümü, sıralama ve arama anahtarı yardımcıları"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Evren Erten" }]
+keywords = ["turkish", "türkçe", "casing", "collation", "unicode"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Natural Language :: Turkish",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Text Processing :: Linguistic",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
